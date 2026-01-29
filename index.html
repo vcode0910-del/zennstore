@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Zenn Storee - Toko Top Up Game, Joki, dan Item Digital Termurah dan Tercepat.">
-    <meta name="keywords" content="Top Up Game, Joki Mobile Legends, Fish It, Murah, QRIS Otomatis">
-    <title>Zenn Storee | Layanan Game Digital Premium</title>
+    <title>Zenn Storee | Premium Gaming Hub</title>
     
     <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -17,8 +15,7 @@
         :root {
             --primary: #2563eb; --primary-hover: #1d4ed8; --bg: #f8fafc;
             --card: #ffffff; --text: #0f172a; --text-muted: #64748b;
-            --border: #e2e8f0; --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --success: #16a34a;
+            --border: #e2e8f0; --shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
         }
 
         [data-theme="dark"] {
@@ -33,113 +30,92 @@
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 9999;
+            justify-content: center; align-items: center; z-index: 10000;
         }
-        #loader.hidden { opacity: 0; pointer-events: none; }
 
-        /* Nav */
+        /* FULL OVERLAY SYSTEM */
+        #fullOverlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px);
+            z-index: 9000; justify-content: center; align-items: center; padding: 20px;
+        }
+        .overlay-card {
+            background: var(--card); padding: 40px; border-radius: 30px;
+            max-width: 500px; width: 100%; text-align: center;
+            box-shadow: var(--shadow); border: 1px solid var(--border);
+            transform: scale(0.8); opacity: 0; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #fullOverlay.active .overlay-card { transform: scale(1); opacity: 1; }
+        .overlay-img { width: 100%; border-radius: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+
+        /* Navigation */
         nav {
             background: var(--card); padding: 15px 7%; display: flex; 
             justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border);
         }
         .logo { font-size: 1.6rem; font-weight: 800; color: var(--primary); text-decoration: none; }
-        .logo span { color: var(--text); }
 
-        /* Search & Hero */
-        .container { max-width: 1200px; margin: auto; padding: 20px 7%; }
-        .search-box {
-            width: 100%; max-width: 600px; padding: 16px 25px; border-radius: 50px;
-            border: 1px solid var(--border); background: var(--card); color: var(--text);
-            box-shadow: var(--shadow); margin: 30px auto; display: block; outline: none;
-        }
-
-        /* Grid */
+        /* Grid & Cards */
+        .container { max-width: 1200px; margin: auto; padding: 40px 7%; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
         .card-prod {
             background: var(--card); border-radius: 24px; overflow: hidden; border: 1px solid var(--border);
-            position: relative; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.4s; position: relative;
         }
         .card-prod:hover { transform: translateY(-10px); box-shadow: var(--shadow); }
-        .card-img { width: 100%; height: 210px; object-fit: cover; background: #eee; }
-        .card-body { padding: 25px; }
+        .card-img { width: 100%; height: 210px; object-fit: cover; }
         .price { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
 
-        /* Modal */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 2000;
-            justify-content: center; align-items: center; padding: 20px;
-        }
-        .modal-content {
-            background: var(--card); padding: 35px; border-radius: 30px; 
-            width: 100%; max-width: 550px; border: 1px solid var(--border);
-            max-height: 90vh; overflow-y: auto;
-        }
-
-        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; }
-        
+        /* Input & Buttons */
         .btn-main {
             width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 700;
             cursor: pointer; background: var(--primary); color: white; display: block; text-align: center;
         }
         .btn-main:hover { background: var(--primary-hover); transform: scale(1.02); }
+        input, select { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; }
 
-        /* Kebab & Dropdown */
-        .kebab-menu { position: relative; }
-        .dropdown {
-            display: none; position: absolute; right: 0; top: 50px; background: var(--card);
-            border: 1px solid var(--border); border-radius: 15px; width: 220px; box-shadow: var(--shadow);
-            z-index: 1100; overflow: hidden;
-        }
-        .dropdown-item {
-            width: 100%; padding: 15px 20px; text-align: left; background: none; border: none;
-            color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600;
-        }
-        .dropdown-item:hover { background: var(--primary); color: white; }
-
-        /* Footer */
-        footer { background: var(--card); padding: 50px 7%; border-top: 1px solid var(--border); margin-top: 80px; text-align: center; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: left; margin-bottom: 30px; }
+        /* Admin Float */
+        .admin-float { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 20px; border: none; cursor: pointer; z-index: 2000; box-shadow: var(--shadow); }
         
-        /* Toast Notification */
-        #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--primary); color: white; padding: 12px 25px; border-radius: 50px;
-            z-index: 10000; box-shadow: var(--shadow); display: none; font-weight: 600;
+        /* Modal General */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 8000;
+            justify-content: center; align-items: center; padding: 20px;
         }
-
-        /* Copy Button Icon */
-        .copy-btn { cursor: pointer; color: var(--primary); margin-left: 10px; }
+        .modal-content { background: var(--card); padding: 35px; border-radius: 30px; width: 100%; max-width: 500px; }
     </style>
 </head>
 <body data-theme="light">
 
+    <!-- LOADER -->
     <div id="loader"><i class="fas fa-circle-notch fa-spin fa-3x" style="color:var(--primary)"></i></div>
-    <div id="toast">Berhasil disalin!</div>
 
+    <!-- FULL OVERLAY SYSTEM -->
+    <div id="fullOverlay">
+        <div class="overlay-card">
+            <img id="ovImg" src="" class="overlay-img" alt="Promo">
+            <h2 id="ovTitle" style="margin-bottom: 10px;">Pengumuman</h2>
+            <p id="ovDesc" style="color: var(--text-muted); margin-bottom: 25px;">Selamat datang di Zenn Storee!</p>
+            <button class="btn-main" onclick="closeOverlay()">Mulai Belanja</button>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
     <nav>
         <a href="#" class="logo">ZENN<span>STOREE</span></a>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <button onclick="toggleTheme()" class="btn-main" style="width: auto; padding: 8px 12px; background: var(--border); color: var(--text);"><i class="fas fa-moon" id="themeIcon"></i></button>
-            <div class="kebab-menu">
-                <button onclick="toggleDrop()" style="background:none; border:none; color:var(--text); cursor:pointer; font-size: 1.2rem;"><i class="fas fa-bars"></i></button>
-                <div id="dropMenu" class="dropdown">
-                    <button class="dropdown-item" onclick="openModal('trackModal')"><i class="fas fa-search-location"></i> Lacak Pesanan</button>
-                    <button class="dropdown-item" onclick="window.open('https://wa.me/6285129226805')"><i class="fas fa-headset"></i> Layanan CS</button>
-                    <button class="dropdown-item" onclick="alert('Website v9.0 | Zenn Digital')"><i class="fas fa-info-circle"></i> Tentang</button>
-                </div>
-            </div>
+            <button onclick="toggleTheme()" class="btn-main" style="width: auto; padding: 8px 12px; background: var(--border); color: var(--text); border: none;"><i class="fas fa-moon" id="themeIcon"></i></button>
+            <button onclick="openModal('trackModal')" style="background:none; border:none; color:var(--text); cursor:pointer; font-size: 1.2rem;"><i class="fas fa-search-location"></i></button>
         </div>
     </nav>
 
     <div class="container">
-        <header style="text-align: center; margin-top: 40px;" data-aos="fade-up">
-            <h1>Premium <span>Game Hub</span></h1>
-            <p style="color: var(--text-muted);">Top Up Cepat, Joki Aman, & Item Langka Terlengkap.</p>
+        <header style="text-align: center; margin-bottom: 50px;" data-aos="fade-up">
+            <h1>Game Hub <span>Premium</span></h1>
+            <p style="color: var(--text-muted);">Layanan Top Up & Joki Tercepat dengan Sistem Cloud.</p>
         </header>
-
-        <input type="text" class="search-box" id="searchInput" placeholder="Telusuri game favoritmu..." onkeyup="filterProducts()">
 
         <div class="grid" id="mainGrid"></div>
     </div>
@@ -147,19 +123,15 @@
     <!-- MODAL ORDER -->
     <div id="orderModal" class="modal">
         <div class="modal-content">
-            <h2 id="orderTitle">Detail Pesanan</h2>
+            <h2 id="orderTitle">Order Produk</h2>
             <div style="margin: 20px 0;">
-                <label style="font-size: 0.8rem; font-weight: 700;">USER ID / DATA TARGET</label>
-                <input type="text" id="targetId" placeholder="Masukkan ID Game (Contoh: 1234567)">
-                
+                <input type="text" id="targetId" placeholder="User ID / Target">
                 <div style="background:var(--bg); padding:20px; border-radius:20px; border:1px solid var(--border); text-align:center;">
-                    <p style="font-size:0.7rem; margin-bottom:10px;">PEMBAYARAN QRIS / DANA:</p>
-                    <img id="displayQR" src="" style="width:200px; border-radius:15px; margin-bottom:10px;">
+                    <img id="qrisImg" src="" style="width:200px; border-radius:15px; margin-bottom:15px;">
                     <h2 id="finalPrice" style="color:var(--primary)">Rp 0</h2>
-                    <p style="font-size: 0.8rem; margin-top: 10px;">DANA: <b>085129226805</b> <i class="fas fa-copy copy-btn" onclick="copyText('085129226805')"></i></p>
                 </div>
             </div>
-            <button class="btn-main" onclick="confirmOrder()">Lanjutkan ke WhatsApp</button>
+            <button class="btn-main" onclick="confirmOrder()">Bayar & Konfirmasi WA</button>
             <button class="btn-main" style="background:none; color:var(--text-muted); margin-top:10px;" onclick="closeModal('orderModal')">Batal</button>
         </div>
     </div>
@@ -168,53 +140,36 @@
     <div id="trackModal" class="modal">
         <div class="modal-content">
             <h2>Lacak Pesanan</h2>
-            <p style="font-size: 0.8rem; margin-bottom: 15px;">Masukkan User ID Game Anda untuk cek status.</p>
-            <input type="text" id="trackIdInput" placeholder="User ID Game Anda">
-            <button class="btn-main" onclick="trackOrder()">Cari Status</button>
-            <div id="trackResult" style="margin-top: 20px;"></div>
+            <input type="text" id="trackInput" placeholder="Masukkan User ID Game">
+            <button class="btn-main" onclick="trackOrder()">Cek Status</button>
+            <div id="trackRes" style="margin-top:20px;"></div>
             <button class="btn-main" style="background:none; color:var(--text-muted); margin-top:10px;" onclick="closeModal('trackModal')">Tutup</button>
         </div>
     </div>
 
-    <!-- MODAL ADMIN -->
+    <!-- ADMIN PANEL -->
+    <button class="admin-float" onclick="openAdmin()"><i class="fas fa-shield-alt"></i></button>
+
     <div id="adminModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
-            <h2>Admin Cloud Dashboard</h2>
-            <div style="margin-top: 15px;">
-                <label>Ganti QRIS:</label>
-                <input type="file" id="newQR" accept="image/*">
-                <button class="btn-main" style="margin-bottom: 20px;" onclick="uploadQR()">Update QRIS</button>
+            <h2>Admin Cloud Control</h2>
+            <div style="margin-top: 20px; max-height: 60vh; overflow-y: auto;">
+                <label>Update Overlay Pengumuman:</label>
+                <input type="text" id="ovTitleNew" placeholder="Judul Pengumuman">
+                <input type="text" id="ovDescNew" placeholder="Deskripsi Singkat">
+                <input type="file" id="ovImgNew" accept="image/*">
+                <button class="btn-main" style="margin-bottom:20px" onclick="updateOverlay()">Update Overlay</button>
                 
-                <hr style="margin: 20px 0; border: 1px solid var(--border);">
+                <hr style="margin:20px 0;">
                 
-                <label>Tambah Produk Baru:</label>
-                <input type="text" id="p_name" placeholder="Nama Produk">
-                <input type="number" id="p_price" placeholder="Harga">
-                <input type="file" id="p_img" accept="image/*">
+                <label>Tambah Produk:</label>
+                <input type="text" id="pName" placeholder="Nama Produk">
+                <input type="number" id="pPrice" placeholder="Harga">
+                <input type="file" id="pImg" accept="image/*">
                 <button class="btn-main" onclick="addProduct()">Simpan Produk</button>
             </div>
         </div>
     </div>
-
-    <button onclick="openAdmin()" style="position:fixed; bottom:25px; right:25px; width:50px; height:50px; background:var(--primary); color:white; border-radius:15px; border:none; cursor:pointer; z-index:900;"><i class="fas fa-shield-alt"></i></button>
-
-    <footer>
-        <div class="footer-grid">
-            <div>
-                <h3 style="color:var(--primary)">ZENN STOREE</h3>
-                <p style="font-size:0.8rem; margin-top:10px;">Layanan Top Up Game termurah dan terpercaya di Indonesia. Berdiri sejak 2024.</p>
-            </div>
-            <div>
-                <h3>Metode Bayar</h3>
-                <p style="font-size:0.8rem; margin-top:10px;">QRIS All Payment, DANA, GoPay, OVO, ShopeePay.</p>
-            </div>
-            <div>
-                <h3>Jam Operasional</h3>
-                <p style="font-size:0.8rem; margin-top:10px;">Setiap Hari<br>09:00 - 22:00 WIB</p>
-            </div>
-        </div>
-        <p style="font-size: 0.7rem; opacity: 0.5;">&copy; 2025 Zenn Storee. Seluruh hak cipta dilindungi.</p>
-    </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
@@ -225,18 +180,32 @@
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
         let products = [];
-        let qrisUrl = "";
         let selectedIdx = null;
 
-        async function loadAll() {
+        async function init() {
             setLoad(true);
             try {
+                // Load Products
                 const { data: p } = await _supabase.from('products').select('*');
                 products = p || [];
                 renderGrid(products);
 
-                const { data: s } = await _supabase.from('settings').select('value').eq('key', 'qris_image').single();
-                qrisUrl = s ? s.value : "";
+                // Load Settings (QRIS & Overlay)
+                const { data: s } = await _supabase.from('settings').select('*');
+                const qris = s.find(x => x.key === 'qris_image');
+                const ovT = s.find(x => x.key === 'ov_title');
+                const ovD = s.find(x => x.key === 'ov_desc');
+                const ovI = s.find(x => x.key === 'ov_img');
+
+                window.qrisUrl = qris ? qris.value : "";
+                
+                // Overlay Logic
+                if (!sessionStorage.getItem('zenn_welcome')) {
+                    document.getElementById('ovTitle').innerText = ovT ? ovT.value : "Welcome";
+                    document.getElementById('ovDesc').innerText = ovD ? ovD.value : "Selamat Belanja!";
+                    document.getElementById('ovImg').src = ovI ? ovI.value : "";
+                    showOverlay();
+                }
             } catch(e) {}
             setLoad(false);
         }
@@ -245,20 +214,14 @@
             const grid = document.getElementById('mainGrid');
             grid.innerHTML = data.map((p, i) => `
                 <div class="card-prod" data-aos="fade-up">
-                    <img src="${p.img || 'https://via.placeholder.com/300'}" class="card-img">
-                    <div class="card-body">
-                        <h3 style="margin-bottom:5px">${p.name}</h3>
+                    <img src="${p.img}" class="card-img">
+                    <div style="padding:20px">
+                        <h3>${p.name}</h3>
                         <p class="price">Rp ${parseInt(p.price).toLocaleString()}</p>
-                        <button class="btn-main" style="margin-top:15px" onclick="openOrder(${i})">Beli</button>
+                        <button class="btn-main" style="margin-top:15px" onclick="openOrder(${i})">Beli Sekarang</button>
                     </div>
                 </div>
             `).join('');
-        }
-
-        function filterProducts() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = products.filter(p => p.name.toLowerCase().includes(q));
-            renderGrid(filtered);
         }
 
         function openOrder(idx) {
@@ -266,84 +229,63 @@
             const p = products[idx];
             document.getElementById('orderTitle').innerText = p.name;
             document.getElementById('finalPrice').innerText = `Rp ${parseInt(p.price).toLocaleString()}`;
-            document.getElementById('displayQR').src = qrisUrl;
+            document.getElementById('qrisImg').src = window.qrisUrl;
             openModal('orderModal');
         }
 
         async function confirmOrder() {
             const target = document.getElementById('targetId').value;
-            if(!target) return alert("Isi Target ID!");
+            if(!target) return alert("Isi Target!");
             const p = products[selectedIdx];
+            await _supabase.from('orders').insert([{ prod: p.name, target: target, price: p.price, status: 'Pending' }]);
+            window.open(`https://wa.me/6285129226805?text=*ORDER BARU*%0AProduk: ${p.name}%0ATarget: ${target}`);
+        }
+
+        // Overlay & Admin
+        function showOverlay() {
+            const ov = document.getElementById('fullOverlay');
+            ov.style.display = 'flex';
+            setTimeout(() => ov.classList.add('active'), 50);
+        }
+
+        function closeOverlay() {
+            const ov = document.getElementById('fullOverlay');
+            ov.classList.remove('active');
+            sessionStorage.setItem('zenn_welcome', 'true');
+            setTimeout(() => ov.style.display = 'none', 500);
+        }
+
+        async function updateOverlay() {
+            const t = document.getElementById('ovTitleNew').value;
+            const d = document.getElementById('ovDescNew').value;
+            const f = document.getElementById('ovImgNew').files[0];
             
-            // Simpan ke database orders untuk tracking
-            await _supabase.from('orders').insert([{ user: 'Guest', prod: p.name, target: target, price: p.price, status: 'Pending' }]);
-            
-            const msg = `*ORDER BARU - ZENN STOREE*%0AProduk: ${p.name}%0ATarget: ${target}%0AHarga: Rp ${parseInt(p.price).toLocaleString()}%0A%0A_Saya sudah melakukan pembayaran._`;
-            window.open(`https://wa.me/6285129226805?text=${msg}`);
+            setLoad(true);
+            if(t) await _supabase.from('settings').update({ value: t }).eq('key', 'ov_title');
+            if(d) await _supabase.from('settings').update({ value: d }).eq('key', 'ov_desc');
+            if(f) {
+                const reader = new FileReader();
+                reader.readAsDataURL(f);
+                reader.onload = async () => {
+                    await _supabase.from('settings').update({ value: reader.result }).eq('key', 'ov_img');
+                    location.reload();
+                };
+            } else { location.reload(); }
         }
 
-        async function trackOrder() {
-            const id = document.getElementById('trackIdInput').value;
-            if(!id) return;
-            const resEl = document.getElementById('trackResult');
-            resEl.innerHTML = "Mencari...";
-            
-            const { data } = await _supabase.from('orders').select('*').eq('target', id).order('created_at', { ascending: false });
-            if(data && data.length > 0) {
-                resEl.innerHTML = data.map(o => `
-                    <div style="background:var(--bg); padding:10px; border-radius:10px; margin-bottom:10px; font-size:0.8rem; border-left:4px solid var(--primary)">
-                        <b>${o.prod}</b><br>
-                        Status: <span style="color:var(--primary)">${o.status}</span><br>
-                        <small>${o.created_at.slice(0, 10)}</small>
-                    </div>
-                `).join('');
-            } else { resEl.innerHTML = "Pesanan tidak ditemukan."; }
-        }
-
-        // Admin & Utils
-        async function uploadQR() {
-            const file = document.getElementById('newQR').files[0];
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async () => {
-                await _supabase.from('settings').update({ value: reader.result }).eq('key', 'qris_image');
-                location.reload();
-            };
-        }
-
-        async function addProduct() {
-            const n = document.getElementById('p_name').value;
-            const p = document.getElementById('p_price').value;
-            const f = document.getElementById('p_img').files[0];
-            const r = new FileReader();
-            r.readAsDataURL(f);
-            r.onload = async () => {
-                await _supabase.from('products').insert([{ name: n, price: p, img: r.result }]);
-                location.reload();
-            };
-        }
-
-        function copyText(txt) {
-            navigator.clipboard.writeText(txt);
-            const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 2000);
-        }
-
-        function openAdmin() { if(prompt("Pass Admin:") === "admin123") openModal('adminModal'); }
+        // Utils
+        function openAdmin() { if(prompt("Pass:") === "admin123") openModal('adminModal'); }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function setLoad(s) { document.getElementById('loader').style.display = s ? 'flex' : 'none'; }
         function toggleTheme() {
             const b = document.body;
             const isDark = b.getAttribute('data-theme') === 'dark';
             b.setAttribute('data-theme', isDark ? 'light' : 'dark');
             document.getElementById('themeIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
         }
-        function toggleDrop() { const d = document.getElementById('dropMenu'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function setLoad(s) { document.getElementById('loader').style.display = s ? 'flex' : 'none'; }
 
-        window.onload = loadAll;
-        window.onclick = (e) => { if(!e.target.closest('.kebab-menu')) document.getElementById('dropMenu').style.display = 'none'; }
+        window.onload = init;
     </script>
 </body>
 </html>
