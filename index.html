@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenn Storee - Cloud Professional Store</title>
+    <title>Zenn Storee - Cloud & Pro Dashboard</title>
     
     <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -26,7 +26,6 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.3s, color 0.3s; }
         body { background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
 
-        /* Loader - FIX: pointer-events none agar tidak menghalangi tombol */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg); display: flex; flex-direction: column;
@@ -35,80 +34,88 @@
         }
         #loader.hidden { opacity: 0; pointer-events: none; }
 
-        /* Navigation */
         nav {
             background: var(--card); padding: 15px 5%; display: flex; 
             justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border);
         }
         .logo { font-size: 1.6rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .nav-tools { display: flex; align-items: center; gap: 15px; }
 
-        /* Container */
-        .container { max-width: 1200px; margin: auto; padding: 40px 5%; }
+        /* Kebab Menu */
+        .kebab-container { position: relative; }
+        .kebab-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text); padding: 5px; }
+        .dropdown-menu {
+            display: none; position: absolute; right: 0; top: 45px; background: var(--card);
+            border: 1px solid var(--border); border-radius: 15px; width: 200px; box-shadow: var(--shadow);
+            z-index: 1100; overflow: hidden; animation: fadeIn 0.3s;
+        }
+        .dropdown-item {
+            width: 100%; padding: 12px 20px; text-align: left; background: none; border: none;
+            color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600;
+        }
+        .dropdown-item:hover { background: var(--primary); color: white; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Content */
+        .search-container { max-width: 600px; margin: 30px auto 40px; padding: 0 20px; }
+        .search-box { width: 100%; padding: 15px 25px; border-radius: 30px; border: 1px solid var(--border); background: var(--card); color: var(--text); outline: none; box-shadow: var(--shadow); }
+
+        .container { max-width: 1200px; margin: auto; padding: 20px 5%; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
 
-        /* Card Produk */
-        .card-prod {
-            background: var(--card); border-radius: 24px; overflow: hidden; border: 1px solid var(--border);
-            transition: 0.4s; position: relative;
-        }
+        .card-prod { background: var(--card); border-radius: 24px; overflow: hidden; border: 1px solid var(--border); transition: 0.4s; position: relative; }
         .card-prod:hover { transform: translateY(-10px); box-shadow: var(--shadow); }
         .card-img { width: 100%; height: 210px; object-fit: cover; background: #eee; }
         .card-body { padding: 22px; }
-        .price-tag { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin: 10px 0; }
 
-        /* Button Modern */
-        .btn-main {
-            width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 700; 
-            cursor: pointer; background: var(--primary); color: white; display: block;
-            text-align: center; text-decoration: none; font-size: 0.95rem;
-        }
-        .btn-main:hover { background: var(--primary-hover); transform: scale(1.02); }
-        .btn-main:active { transform: scale(0.95); }
+        .btn-main { width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; background: var(--primary); color: white; display: block; text-align: center; font-size: 0.95rem; }
 
         /* Modal */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 2000;
-            justify-content: center; align-items: center; padding: 20px;
-        }
-        .modal-content {
-            background: var(--card); padding: 35px; border-radius: 30px; width: 100%; 
-            max-width: 500px; border: 1px solid var(--border); position: relative;
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: var(--card); padding: 30px; border-radius: 30px; width: 100%; max-width: 550px; border: 1px solid var(--border); max-height: 90vh; overflow-y: auto; }
 
-        input {
-            width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 12px;
-            border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none;
-        }
+        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; }
 
-        .admin-float { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background: var(--primary); color: white; border-radius: 18px; border: none; cursor: pointer; z-index: 1500; }
+        /* Admin UI */
+        .admin-float { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background: var(--primary); color: white; border-radius: 18px; border: none; cursor: pointer; z-index: 900; box-shadow: var(--shadow); }
     </style>
 </head>
 <body data-theme="light">
 
-    <!-- Loader -->
+    <!-- LOADER -->
     <div id="loader">
         <i class="fas fa-circle-notch fa-spin fa-3x" style="color:var(--primary)"></i>
-        <p style="margin-top:20px; font-weight:800;">ZENN CLOUD CONNECTING...</p>
+        <p style="margin-top:20px; font-weight:800;">ZENN STOREE v8.0...</p>
     </div>
 
     <!-- NAVBAR -->
     <nav>
         <a href="#" class="logo">ZENN<span>STOREE</span></a>
-        <button onclick="toggleTheme()" style="background:none; border:none; color:var(--text); font-size:1.2rem; cursor:pointer;"><i class="fas fa-moon" id="themeIcon"></i></button>
+        
+        <div class="nav-tools">
+            <button onclick="toggleTheme()" style="background:none; border:none; color:var(--text); font-size:1.2rem; cursor:pointer;"><i class="fas fa-moon" id="themeIcon"></i></button>
+            
+            <div class="kebab-container">
+                <button class="kebab-btn" onclick="toggleKebab()"><i class="fas fa-ellipsis-v"></i></button>
+                <div id="kebabMenu" class="dropdown-menu">
+                    <button class="dropdown-item" onclick="alert('History Belum Tersedia')"><i class="fas fa-history"></i> History</button>
+                    <button class="dropdown-item" onclick="alert('Zenn Storee v8.0 - Cloud Base')"><i class="fas fa-info-circle"></i> Tentang</button>
+                    <button class="dropdown-item" onclick="window.open('https://wa.me/6285129226805')"><i class="fas fa-headset"></i> Hubungi Admin</button>
+                    <button class="dropdown-item" onclick="location.reload()" style="color:red;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+        </div>
     </nav>
 
-    <!-- MAIN -->
-    <div class="container">
-        <header style="text-align: center; margin-bottom: 50px;" data-aos="fade-up">
-            <h1>Game Store <span>Cloud</span></h1>
-            <p style="color:var(--text-muted)">Top Up Otomatis & Joki Profesional Real-Time.</p>
-        </header>
+    <!-- SEARCH -->
+    <div class="search-container" data-aos="fade-down">
+        <input type="text" class="search-box" id="searchInput" placeholder="Telusuri produk atau layanan..." onkeyup="filterSearch()">
+    </div>
 
-        <div class="grid" id="mainGrid">
-            <!-- Produk Muncul Di Sini -->
-        </div>
+    <!-- MAIN GRID -->
+    <div class="container">
+        <div class="grid" id="mainGrid"></div>
     </div>
 
     <!-- MODAL ORDER -->
@@ -116,17 +123,38 @@
         <div class="modal-content">
             <h2 id="orderTitle">Detail Order</h2>
             <div style="margin: 20px 0;">
-                <label style="font-size: 0.8rem; font-weight: 700;">USER ID / DATA TARGET</label>
-                <input type="text" id="targetId" placeholder="Contoh: 12345678 (Server)">
+                <label style="font-size: 0.8rem; font-weight: 700;">USER ID / TARGET</label>
+                <input type="text" id="targetId" placeholder="Masukkan ID Game">
                 
-                <div style="background:var(--bg); padding:20px; border-radius:20px; border:1px dashed var(--border); text-align:center;">
-                    <p style="font-size:0.8rem; margin-bottom:5px;">TOTAL PEMBAYARAN:</p>
-                    <h2 id="finalPrice" style="color:var(--primary)">Rp 0</h2>
+                <div id="paymentArea" style="background:var(--bg); padding:20px; border-radius:20px; border:1px solid var(--border); text-align:center;">
+                    <p style="font-size:0.8rem; margin-bottom:10px;">SCAN QRIS PEMBAYARAN:</p>
+                    <img id="displayQRIS" src="" style="width:200px; border-radius:10px; margin-bottom:10px; background:#eee;">
+                    <h3 id="finalPrice" style="color:var(--primary)">Rp 0</h3>
                 </div>
             </div>
-
-            <button class="btn-main" onclick="confirmOrder()">Pesan Sekarang (WA)</button>
+            <button class="btn-main" onclick="confirmOrder()">Lanjutkan ke WhatsApp</button>
             <button class="btn-main" style="background:none; color:var(--text-muted); margin-top:10px;" onclick="closeModal()">Batal</button>
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <h2>Admin Dashboard</h2>
+            <div style="margin-top:20px;">
+                <h3 style="font-size:1rem; margin-bottom:10px;">Update QRIS Pembayaran</h3>
+                <input type="file" id="newQRIS" accept="image/*" class="input-box">
+                <button class="btn-main" onclick="updateQRIS()">Simpan QRIS Baru</button>
+                
+                <hr style="margin:25px 0; border:0; border-top:1px solid var(--border);">
+                
+                <h3 style="font-size:1rem; margin-bottom:10px;">Tambah Produk</h3>
+                <input type="text" id="p_name" placeholder="Nama Produk">
+                <input type="number" id="p_price" placeholder="Harga">
+                <input type="file" id="p_img" accept="image/*">
+                <button class="btn-main" onclick="adminAddProduct()">Tambah Produk</button>
+            </div>
+            <button class="btn-main" style="background:none; color:var(--text-muted); margin-top:20px;" onclick="closeModal()">Tutup</button>
         </div>
     </div>
 
@@ -136,103 +164,132 @@
     <script>
         AOS.init();
 
-        // --- KONFIGURASI SUPABASE ---
         const SB_URL = "https://supjhhgcnqqxdkzsvykq.supabase.co";
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1cGpoaGdjbnFxeGRrenN2eWtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjczNDQsImV4cCI6MjA4NTI0MzM0NH0.UtP06HT6V8X5M_IY2BCixrz0VNwDsNAZiDK8NgSfcgw";
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        let _supabase;
         let prods = [];
+        let filteredProds = [];
+        let currentQRIS = "";
         let selectedIdx = null;
 
-        // Inisialisasi
-        try {
-            _supabase = supabase.createClient(SB_URL, SB_KEY);
-        } catch(e) { console.error("Koneksi Supabase Gagal"); }
-
-        // Load Data Produk
-        async function fetchCloud() {
+        // FETCH DATA
+        async function loadAll() {
             setLoad(true);
             try {
-                const { data, error } = await _supabase.from('products').select('*');
-                if (error) throw error;
-                prods = data || [];
-                renderGrid(prods);
-            } catch (err) {
-                console.error("Error memuat data:", err.message);
-                document.getElementById('mainGrid').innerHTML = "<p>Gagal memuat produk. Cek koneksi.</p>";
-            } finally {
-                setLoad(false);
-            }
+                // Fetch Products
+                const { data: pData } = await _supabase.from('products').select('*');
+                prods = pData || [];
+                filteredProds = prods;
+                renderGrid(filteredProds);
+
+                // Fetch QRIS from Settings
+                const { data: sData } = await _supabase.from('settings').select('value').eq('key', 'qris_image').single();
+                currentQRIS = sData ? sData.value : "";
+            } catch (err) { console.error(err); }
+            setLoad(false);
         }
 
         function renderGrid(data) {
             const grid = document.getElementById('mainGrid');
-            if(data.length === 0) {
-                grid.innerHTML = `<p style="text-align:center; grid-column:1/-1;">Belum ada produk di database.</p>`;
-                return;
-            }
+            if(data.length === 0) { grid.innerHTML = `<p style="text-align:center; grid-column:1/-1;">Produk tidak ditemukan.</p>`; return; }
             grid.innerHTML = data.map((p, i) => `
                 <div class="card-prod" data-aos="fade-up">
                     <img src="${p.img || 'https://via.placeholder.com/300'}" class="card-img">
                     <div class="card-body">
                         <h3 style="margin-bottom:5px;">${p.name}</h3>
-                        <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px;">${p.cat || 'Game'}</p>
-                        <p class="price-tag">Rp ${parseInt(p.price).toLocaleString()}</p>
-                        <button class="btn-main" onclick="openOrder(${i})">Beli Sekarang</button>
+                        <p style="font-size:1.4rem; font-weight:800; color:var(--primary);">Rp ${parseInt(p.price).toLocaleString()}</p>
+                        <button class="btn-main" style="margin-top:15px;" onclick="openOrder(${i})">Beli Sekarang</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Fungsi Beli (Buka Modal)
-        function openOrder(idx) {
-            console.log("Membuka produk indeks:", idx); // Cek di console (F12)
-            selectedIdx = idx;
-            const p = prods[idx];
-            document.getElementById('orderTitle').innerText = p.name;
-            document.getElementById('finalPrice').innerText = `Rp ${parseInt(p.price).toLocaleString()}`;
-            document.getElementById('orderModal').style.display = 'flex';
+        // UI ACTIONS
+        function toggleKebab() {
+            const m = document.getElementById('kebabMenu');
+            m.style.display = m.style.display === 'block' ? 'none' : 'block';
         }
 
-        function closeModal() {
-            document.getElementById('orderModal').style.display = 'none';
+        function filterSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            filteredProds = prods.filter(p => p.name.toLowerCase().includes(q));
+            renderGrid(filteredProds);
+        }
+
+        function openOrder(idx) {
+            selectedIdx = idx;
+            const p = filteredProds[idx];
+            document.getElementById('orderTitle').innerText = p.name;
+            document.getElementById('finalPrice').innerText = `Rp ${parseInt(p.price).toLocaleString()}`;
+            document.getElementById('displayQRIS').src = currentQRIS || "https://via.placeholder.com/300?text=QRIS+BELUM+DISET";
+            document.getElementById('orderModal').style.display = 'flex';
         }
 
         function confirmOrder() {
             const target = document.getElementById('targetId').value;
-            if(!target) return alert("Masukkan ID Game Anda!");
-            const p = prods[selectedIdx];
-            const wa = `https://api.whatsapp.com/send?phone=628123456789&text=*ORDER ZENN STOREE*%0AProduk: ${p.name}%0ATarget: ${target}%0AHarga: Rp ${parseInt(p.price).toLocaleString()}`;
-            window.open(wa);
+            if(!target) return alert("Isi ID Game!");
+            const p = filteredProds[selectedIdx];
+            const msg = `*ORDER BARU - ZENN STOREE*%0AProduk: ${p.name}%0ATarget: ${target}%0AHarga: Rp ${parseInt(p.price).toLocaleString()}%0A%0A_Saya sudah scan QRIS di website._`;
+            window.open(`https://wa.me/6285129226805?text=${msg}`);
         }
 
-        // Utilities
-        function setLoad(isLoading) {
-            const loader = document.getElementById('loader');
-            if(!isLoading) {
-                loader.classList.add('hidden');
-            } else {
-                loader.classList.remove('hidden');
-            }
+        // ADMIN FUNCTIONS
+        async function updateQRIS() {
+            const file = document.getElementById('newQRIS').files[0];
+            if(!file) return alert("Pilih foto!");
+            
+            setLoad(true);
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64 = reader.result;
+                const { error } = await _supabase.from('settings').update({ value: base64 }).eq('key', 'qris_image');
+                if(!error) { alert("QRIS Berhasil Diupdate!"); location.reload(); }
+                else alert("Gagal update!");
+                setLoad(false);
+            };
         }
 
-        function toggleTheme() {
-            const body = document.body;
-            const isDark = body.getAttribute('data-theme') === 'dark';
-            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            document.getElementById('themeIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        async function adminAddProduct() {
+            const name = document.getElementById('p_name').value;
+            const price = document.getElementById('p_price').value;
+            const file = document.getElementById('p_img').files[0];
+            if(!name || !file) return alert("Lengkapi data!");
+
+            setLoad(true);
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const { error } = await _supabase.from('products').insert([{ name, price, img: reader.result }]);
+                if(!error) location.reload();
+                else setLoad(false);
+            };
         }
 
         function openAdmin() {
-            const p = prompt("Password Admin:");
-            if(p === "admin123") alert("Admin diakses via Supabase Table Editor.");
+            const p = prompt("Admin Password:");
+            if(p === "admin123") document.getElementById('adminModal').style.display = 'flex';
         }
 
-        // Start
-        window.onload = fetchCloud;
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        }
 
-        // Safety Hide Loader (Jika internet lemot, loader paksa hilang dalam 4 detik)
-        setTimeout(() => setLoad(false), 4000);
+        function setLoad(s) {
+            const l = document.getElementById('loader');
+            if(!s) l.classList.add('hidden'); else l.classList.remove('hidden');
+        }
+
+        function toggleTheme() {
+            const b = document.body;
+            const isDark = b.getAttribute('data-theme') === 'dark';
+            b.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        window.onload = loadAll;
+        window.onclick = (e) => { if(!e.target.matches('.kebab-btn') && !e.target.matches('.fa-ellipsis-v')) document.getElementById('kebabMenu').style.display = 'none'; }
     </script>
 </body>
 </html>
