@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenn Storee | Premium Cloud Hub</title>
+    <title>Zenn Storee | Premium All-in-One Gaming Store</title>
     
     <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -27,301 +27,473 @@
         body { background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
 
         /* Loader */
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 10000;
-        }
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 10000; }
 
-        /* MASTER OVERLAY SYSTEM (Digunakan untuk semua menu) */
+        /* Master Overlay System */
         .full-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px);
             z-index: 9000; display: none; justify-content: center; align-items: center; padding: 20px;
-            opacity: 0; transition: 0.5s ease;
+            opacity: 0;
         }
         .full-overlay.active { display: flex; opacity: 1; }
-        
         .overlay-card {
-            background: var(--card); padding: 40px; border-radius: 35px;
+            background: var(--card); padding: 35px; border-radius: 35px;
             max-width: 550px; width: 100%; text-align: center;
             box-shadow: var(--shadow); border: 1px solid var(--border);
-            transform: scale(0.85); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-height: 90vh; overflow-y: auto;
+            transform: scale(0.85); max-height: 90vh; overflow-y: auto;
         }
         .full-overlay.active .overlay-card { transform: scale(1); }
 
-        /* Navigation */
+        /* Navbar */
         nav {
             background: var(--card); padding: 15px 7%; display: flex; 
             justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border);
         }
         .logo { font-size: 1.6rem; font-weight: 800; color: var(--primary); text-decoration: none; }
-        .logo span { color: var(--text); }
+        .nav-tools { display: flex; gap: 12px; align-items: center; }
 
-        /* Grid */
+        /* UI Elements */
         .container { max-width: 1200px; margin: auto; padding: 40px 7%; }
-        .search-box { width: 100%; max-width: 600px; padding: 16px 25px; border-radius: 50px; border: 1px solid var(--border); background: var(--card); color: var(--text); margin: 0 auto 40px; display: block; outline: none; box-shadow: var(--shadow); }
+        .search-box { width: 100%; max-width: 600px; padding: 16px 25px; border-radius: 50px; border: 1px solid var(--border); background: var(--card); color: var(--text); margin: 0 auto 30px; display: block; outline: none; box-shadow: var(--shadow); }
         
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .card-prod {
-            background: var(--card); border-radius: 28px; overflow: hidden; border: 1px solid var(--border);
-            transition: 0.4s; cursor: pointer;
-        }
-        .card-prod:hover { transform: translateY(-10px); box-shadow: var(--shadow); }
-        .card-img { width: 100%; height: 210px; object-fit: cover; }
-        .price { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; flex-wrap: wrap; }
+        .tab-btn { padding: 8px 20px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); color: var(--text); cursor: pointer; font-weight: 600; }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* Inputs & Buttons */
-        .btn-main { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: 700; cursor: pointer; background: var(--primary); color: white; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .card-prod { background: var(--card); border-radius: 28px; overflow: hidden; border: 1px solid var(--border); transition: 0.4s; cursor: pointer; }
+        .card-prod:hover { transform: translateY(-10px); box-shadow: var(--shadow); }
+        .card-img { width: 100%; height: 200px; object-fit: cover; }
+        
+        .btn-main { width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-main:hover { background: var(--primary-hover); transform: scale(1.02); }
         input, select, textarea { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; }
 
-        .kebab-item { padding: 12px 20px; width: 100%; text-align: left; background: none; border: none; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 600; }
-        .kebab-item:hover { background: var(--primary); color: white; }
+        /* Testimonials */
+        .testi-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--border); text-align: left; }
+        .testi-img { width: 100%; height: 150px; object-fit: cover; border-radius: 15px; margin-bottom: 10px; }
+
+        /* Toast */
+        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 10px 25px; border-radius: 50px; z-index: 10000; display: none; font-weight: 600; box-shadow: var(--shadow); }
+        
+        footer { background: var(--card); padding: 50px 7%; border-top: 1px solid var(--border); margin-top: 60px; text-align: center; }
     </style>
 </head>
 <body data-theme="light">
 
-    <!-- LOADER -->
+    <!-- Toast & Loader -->
     <div id="loader"><i class="fas fa-circle-notch fa-spin fa-3x" style="color:var(--primary)"></i></div>
+    <div id="toast">Berhasil!</div>
 
-    <!-- 1. OVERLAY PENGUMUMAN / WELCOME -->
+    <!-- OVERLAYS -->
+    <!-- 1. Welcome Overlay -->
     <div id="ov-welcome" class="full-overlay">
         <div class="overlay-card">
-            <img id="welcomeImg" src="" style="width:100%; border-radius:20px; margin-bottom:20px; display:none;">
-            <h2 id="welcomeTitle">Halo Gamers!</h2>
-            <p id="welcomeDesc" style="color:var(--text-muted); margin: 15px 0 30px;">Selamat datang di Zenn Storee. Nikmati layanan Top Up tercepat di Indonesia.</p>
-            <button class="btn-main" onclick="closeOverlay('ov-welcome')">Mulai Telusuri</button>
+            <img id="ov-welcome-img" src="" style="width:100%; border-radius:20px; margin-bottom:20px; display:none;">
+            <h2 id="ov-welcome-title">Selamat Datang!</h2>
+            <p id="ov-welcome-desc" style="color:var(--text-muted); margin: 15px 0 25px;">Zenn Storee siap melayani kebutuhan gaming Anda.</p>
+            <button class="btn-main" onclick="closeOverlay('ov-welcome')">Mulai Belanja</button>
         </div>
     </div>
 
-    <!-- 2. OVERLAY ORDER -->
+    <!-- 2. Auth Overlay -->
+    <div id="ov-auth" class="full-overlay">
+        <div class="overlay-card">
+            <h2 id="auth-title">Login Akun</h2>
+            <div style="margin-top:20px;">
+                <input type="text" id="auth-u" placeholder="Username">
+                <input type="password" id="auth-p" placeholder="Password">
+                <button class="btn-main" onclick="handleAuth()">Lanjutkan</button>
+                <p onclick="toggleAuthMode()" id="auth-switch" style="margin-top:15px; font-size:0.8rem; color:var(--primary); cursor:pointer;">Belum punya akun? Daftar</p>
+                <button class="btn-main" style="background:none; color:var(--text-muted); margin-top:10px;" onclick="closeOverlay('ov-auth')">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Order Overlay -->
     <div id="ov-order" class="full-overlay">
         <div class="overlay-card">
-            <h2 id="orderName">Produk</h2>
-            <div style="margin: 25px 0;">
-                <input type="text" id="targetId" placeholder="User ID / Server / Target">
+            <h2 id="order-name">Produk</h2>
+            <div style="margin-top:20px; text-align:left;">
+                <label style="font-size:0.75rem; font-weight:700;">DATA TARGET (ID GAME):</label>
+                <input type="text" id="order-target" placeholder="Contoh: 12345678 (Server)">
+                
                 <div style="background:var(--bg); padding:20px; border-radius:25px; border:1px solid var(--border); text-align:center;">
-                    <p style="font-size:0.75rem; margin-bottom:10px;">SCAN QRIS UNTUK BAYAR:</p>
-                    <img id="qrisImg" src="" style="width:200px; border-radius:15px; margin-bottom:15px; background:#eee;">
-                    <h2 id="orderPrice" style="color:var(--primary)">Rp 0</h2>
+                    <p style="font-size:0.7rem; margin-bottom:10px;">SCAN QRIS / DANA (085129226805):</p>
+                    <img id="qris-img" src="" style="width:200px; border-radius:15px; margin-bottom:15px; background:#eee;">
+                    <h2 id="order-price" style="color:var(--primary)">Rp 0</h2>
                 </div>
             </div>
-            <button class="btn-main" onclick="confirmPayment()">Bayar & Kirim Bukti (WA)</button>
-            <button class="btn-main" style="background:none; color:var(--text-muted); margin-top:10px;" onclick="closeOverlay('ov-order')">Batal</button>
+            <button class="btn-main" onclick="submitOrder()">Bayar & Konfirmasi (WA)</button>
+            <button class="btn-main" style="background:none; color:var(--text-muted); margin-top:10px;" onclick="closeOverlay('ov-order')">Kembali</button>
         </div>
     </div>
 
-    <!-- 3. OVERLAY TRACKING -->
+    <!-- 4. Tracking Overlay -->
     <div id="ov-track" class="full-overlay">
         <div class="overlay-card">
             <h2>Lacak Pesanan</h2>
-            <p style="font-size: 0.85rem; margin: 10px 0 20px; color: var(--text-muted);">Cek status joki atau top up Anda secara real-time.</p>
-            <input type="text" id="trackInput" placeholder="Masukkan ID Game">
-            <button class="btn-main" onclick="doTrack()">Cari Pesanan</button>
-            <div id="trackRes" style="margin-top:25px; text-align: left;"></div>
+            <input type="text" id="track-id" placeholder="Masukkan ID Game Anda" style="margin-top:20px;">
+            <button class="btn-main" onclick="trackPesanan()">Cek Status</button>
+            <div id="track-res" style="margin-top:20px; text-align:left;"></div>
             <button class="btn-main" style="background:none; color:var(--text-muted); margin-top:10px;" onclick="closeOverlay('ov-track')">Tutup</button>
         </div>
     </div>
 
-    <!-- 4. OVERLAY ADMIN -->
+    <!-- 5. Admin Dashboard Overlay -->
     <div id="ov-admin" class="full-overlay">
-        <div class="overlay-card" style="max-width: 650px;">
-            <h2>Admin Cloud Control</h2>
-            <div style="margin-top: 25px; text-align: left; max-height: 60vh; overflow-y: auto; padding-right: 10px;">
-                <h3 style="font-size:1rem; margin-bottom:10px;">Kelola QRIS & Overlay</h3>
-                <label style="font-size:0.75rem;">Upload QRIS Baru:</label>
-                <input type="file" id="adm-qris" accept="image/*">
-                <label style="font-size:0.75rem;">Upload Foto Promo Overlay:</label>
-                <input type="file" id="adm-ov" accept="image/*">
-                <button class="btn-main" style="margin-bottom:25px" onclick="updateAdminSettings()">Simpan Pengaturan</button>
-                
-                <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border);">
-                
-                <h3 style="font-size:1rem; margin-bottom:10px;">Tambah Produk</h3>
-                <input type="text" id="adm-pname" placeholder="Nama Produk">
-                <input type="number" id="adm-pprice" placeholder="Harga">
-                <input type="file" id="adm-pimg" accept="image/*">
-                <button class="btn-main" onclick="adminAddProduct()">Tambah Produk</button>
+        <div class="overlay-card" style="max-width: 700px;">
+            <h2>Admin Dashboard Cloud</h2>
+            <div class="tabs" style="margin-top:20px; justify-content:flex-start;">
+                <button class="tab-btn active" onclick="switchAdminTab('a-prod', this)">Produk</button>
+                <button class="tab-btn" onclick="switchAdminTab('a-testi', this)">Testimoni</button>
+                <button class="tab-btn" onclick="switchAdminTab('a-set', this)">Setting</button>
             </div>
-            <button class="btn-main" style="background:none; color:red; margin-top:20px;" onclick="closeOverlay('ov-admin')">Log Out Admin</button>
+
+            <div id="a-prod" class="admin-sec">
+                <input type="text" id="ap-name" placeholder="Nama Produk">
+                <select id="ap-cat"><option>Top Up</option><option>Joki</option><option>Items</option></select>
+                <input type="number" id="ap-price" placeholder="Harga">
+                <textarea id="ap-desc" placeholder="Deskripsi"></textarea>
+                <input type="file" id="ap-img" accept="image/*">
+                <button class="btn-main" onclick="adminAddProduct()">Simpan Produk</button>
+            </div>
+
+            <div id="a-testi" class="admin-sec" style="display:none">
+                <input type="text" id="at-name" placeholder="Nama Pembeli">
+                <input type="number" id="at-rate" placeholder="Rating (1-5)">
+                <textarea id="at-msg" placeholder="Komentar"></textarea>
+                <input type="file" id="at-img" accept="image/*">
+                <button class="btn-main" onclick="adminAddTesti()">Simpan Testimoni</button>
+            </div>
+
+            <div id="a-set" class="admin-sec" style="display:none">
+                <label style="font-size:0.7rem;">Update QRIS Pembayaran:</label>
+                <input type="file" id="as-qris" accept="image/*">
+                <label style="font-size:0.7rem;">Update Foto Welcome Overlay:</label>
+                <input type="file" id="as-welcome" accept="image/*">
+                <button class="btn-main" onclick="adminUpdateSettings()">Update Settings</button>
+                <hr style="margin:20px 0;">
+                <input type="text" id="as-user" placeholder="Username Admin Baru">
+                <input type="password" id="as-pass" placeholder="Password Admin Baru">
+                <button class="btn-main" onclick="adminUpdateAuth()">Update Akun Admin</button>
+            </div>
+            
+            <button class="btn-main" style="background:none; color:red; margin-top:20px;" onclick="closeOverlay('ov-admin')">Logout Admin</button>
         </div>
     </div>
 
     <!-- NAVBAR -->
     <nav>
         <a href="#" class="logo">ZENN<span>STOREE</span></a>
-        <div style="display: flex; gap: 15px;">
-            <button class="btn-main" onclick="toggleTheme()" style="width:auto; padding:8px 12px; background:var(--border); color:var(--text);"><i class="fas fa-moon" id="themeIcon"></i></button>
-            <div style="position: relative;">
-                <button onclick="toggleKebab()" style="background:none; border:none; color:var(--text); cursor:pointer; font-size:1.4rem; padding:5px;"><i class="fas fa-ellipsis-v"></i></button>
-                <div id="kebab" style="display:none; position:absolute; right:0; top:45px; background:var(--card); border:1px solid var(--border); border-radius:15px; width:200px; box-shadow:var(--shadow); z-index:1100; overflow:hidden;">
-                    <button class="kebab-item" onclick="openOverlay('ov-track')"><i class="fas fa-search"></i> Lacak</button>
-                    <button class="kebab-item" onclick="window.open('https://wa.me/6285129226805')"><i class="fas fa-headset"></i> Support</button>
-                    <button class="kebab-item" onclick="openAdmin()" style="color:var(--primary)"><i class="fas fa-shield-alt"></i> Admin</button>
+        <div class="nav-tools">
+            <button onclick="toggleLang()" class="tab-btn"><i class="fas fa-language"></i> <span id="lang-text">ID</span></button>
+            <button onclick="toggleTheme()" class="tab-btn" id="theme-icon"><i class="fas fa-moon"></i></button>
+            
+            <!-- User Info -->
+            <div id="user-area">
+                <button class="tab-btn" onclick="openOverlay('ov-auth')"><i class="fas fa-user-circle"></i> Login</button>
+            </div>
+
+            <!-- Kebab Menu -->
+            <div style="position:relative;">
+                <button onclick="toggleKebab()" style="background:none; border:none; color:var(--text); cursor:pointer; font-size:1.3rem;"><i class="fas fa-ellipsis-v"></i></button>
+                <div id="kebab-menu" style="display:none; position:absolute; right:0; top:45px; background:var(--card); border:1px solid var(--border); border-radius:15px; width:180px; box-shadow:var(--shadow); z-index:1100; overflow:hidden;">
+                    <button class="kebab-item" style="width:100%; padding:12px; text-align:left; background:none; border:none; color:var(--text); cursor:pointer;" onclick="openOverlay('ov-track')"><i class="fas fa-search"></i> Lacak Pesanan</button>
+                    <button class="kebab-item" style="width:100%; padding:12px; text-align:left; background:none; border:none; color:var(--text); cursor:pointer;" onclick="window.open('https://wa.me/6285129226805')"><i class="fas fa-headset"></i> CS Admin</button>
+                    <button class="kebab-item" style="width:100%; padding:12px; text-align:left; background:none; border:none; color:var(--primary); cursor:pointer;" onclick="accessAdmin()"><i class="fas fa-shield-alt"></i> Admin Panel</button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- MAIN -->
+    <!-- HERO & SEARCH -->
     <div class="container">
-        <header style="text-align: center; margin-bottom: 50px;" data-aos="fade-up">
-            <h1>Game Store <span>Cloud</span></h1>
-            <p style="color:var(--text-muted)">Top Up Otomatis & Joki Profesional Real-Time.</p>
+        <header style="text-align: center; margin-bottom: 40px;" data-aos="fade-up">
+            <h1 id="tr-h1">Gaming Hub <span>Premium</span></h1>
+            <p id="tr-sub" style="color:var(--text-muted)">Top Up Otomatis & Joki Profesional. Amanah & Tercepat.</p>
         </header>
 
-        <input type="text" class="search-box" id="search" placeholder="Cari layanan atau game..." onkeyup="doSearch()">
+        <input type="text" class="search-box" id="search-inp" placeholder="Telusuri produk..." onkeyup="doSearch()">
 
-        <div class="grid" id="mainGrid"></div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="filterCat('all')">Semua</button>
+            <button class="tab-btn" onclick="filterCat('Top Up')">Top Up</button>
+            <button class="tab-btn" onclick="filterCat('Joki')">Joki</button>
+            <button class="tab-btn" onclick="filterCat('Items')">Items</button>
+        </div>
+
+        <div class="grid" id="product-grid"></div>
+
+        <!-- Testimonials Section -->
+        <h2 style="margin-top: 80px; text-align: center;" id="tr-testi">Apa Kata Pelanggan?</h2>
+        <div class="grid" id="testi-grid" style="margin-top:30px;"></div>
     </div>
 
     <footer>
-        <p style="text-align: center; padding: 50px; opacity: 0.5; font-size: 0.8rem;">&copy; 2025 Zenn Storee. Powered by Supabase Cloud.</p>
+        <p>&copy; 2025 Zenn Storee. Seluruh hak cipta dilindungi.</p>
+        <p style="font-size:0.7rem; opacity:0.5; margin-top:10px;">Powered by Supabase Cloud Database</p>
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init();
 
+        // CONFIG SUPABASE
         const SB_URL = "https://supjhhgcnqqxdkzsvykq.supabase.co";
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1cGpoaGdjbnFxeGRrenN2eWtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjczNDQsImV4cCI6MjA4NTI0MzM0NH0.UtP06HT6V8X5M_IY2BCixrz0VNwDsNAZiDK8NgSfcgw";
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
         let products = [];
         let filtered = [];
-        let selectedIdx = null;
+        let currentIdx = null;
+        let lang = 'id';
+        let isLoginMode = true;
+        let currentUser = JSON.parse(sessionStorage.getItem('z_user')) || null;
+        let adminCfg = JSON.parse(localStorage.getItem('z_admin')) || { user: 'admin', pass: 'admin123' };
+
+        // THEME INIT
+        const savedTheme = localStorage.getItem('z_theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        document.getElementById('theme-icon').innerHTML = savedTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+
+        // DICTIONARY
+        const dict = {
+            id: { h1: 'Gaming Hub <span>Premium</span>', sub: 'Top Up Otomatis & Joki Profesional.', testi: 'Apa Kata Pelanggan?' },
+            en: { h1: 'Premium <span>Game Hub</span>', sub: 'Auto Top Up & Pro Boosting Service.', testi: 'Our Customer Reviews' }
+        };
 
         async function init() {
             setLoad(true);
             try {
+                // Fetch Products
                 const { data: p } = await _supabase.from('products').select('*');
                 products = p || [];
                 filtered = products;
-                render(filtered);
+                renderProducts(filtered);
 
+                // Fetch Testimonials
+                const { data: t } = await _supabase.from('testimonials').select('*');
+                renderTestimonials(t || []);
+
+                // Fetch Settings (QRIS & Welcome)
                 const { data: s } = await _supabase.from('settings').select('*');
                 window.qris = s.find(x => x.key === 'qris_image')?.value || "";
                 const ovImg = s.find(x => x.key === 'ov_img')?.value || "";
 
-                // Show Welcome Overlay
+                // Welcome Logic
                 if(!sessionStorage.getItem('visited')) {
-                    if(ovImg) { document.getElementById('welcomeImg').src = ovImg; document.getElementById('welcomeImg').style.display = 'block'; }
+                    if(ovImg) { document.getElementById('ov-welcome-img').src = ovImg; document.getElementById('ov-welcome-img').style.display = 'block'; }
                     setTimeout(() => openOverlay('ov-welcome'), 1000);
                     sessionStorage.setItem('visited', 'true');
                 }
+
+                if(currentUser) updateAuthUI();
             } catch(e) {}
             setLoad(false);
         }
 
-        function render(data) {
-            const grid = document.getElementById('mainGrid');
+        // RENDERERS
+        function renderProducts(data) {
+            const grid = document.getElementById('product-grid');
             grid.innerHTML = data.map((p, i) => `
-                <div class="card-prod" data-aos="zoom-in" onclick="prepOrder(${i})">
+                <div class="card-prod" data-aos="fade-up" onclick="prepOrder(${i})">
                     <img src="${p.img}" class="card-img">
                     <div style="padding:20px">
                         <h3>${p.name}</h3>
-                        <p class="price">Rp ${parseInt(p.price).toLocaleString()}</p>
-                        <button class="btn-main" style="margin-top:15px">Beli Sekarang</button>
+                        <p style="color:var(--primary); font-weight:800; font-size:1.3rem">Rp ${parseInt(p.price).toLocaleString()}</p>
+                        <button class="btn-main" style="margin-top:10px">Beli Sekarang</button>
                     </div>
                 </div>
             `).join('');
         }
 
+        function renderTestimonials(data) {
+            const grid = document.getElementById('testi-grid');
+            grid.innerHTML = data.map(t => `
+                <div class="testi-card" data-aos="fade-up">
+                    <img src="${t.img}" class="testi-img">
+                    <div style="color:#f59e0b; margin-bottom:5px;">${'★'.repeat(t.rate)}</div>
+                    <p style="font-size:0.85rem; font-style:italic;">"${t.msg}"</p>
+                    <p style="margin-top:10px; font-weight:800;">- ${t.name}</p>
+                </div>
+            `).join('');
+        }
+
+        // LOGICS
         function doSearch() {
-            const q = document.getElementById('search').value.toLowerCase();
+            const q = document.getElementById('search-inp').value.toLowerCase();
             filtered = products.filter(x => x.name.toLowerCase().includes(q));
-            render(filtered);
+            renderProducts(filtered);
+        }
+
+        function filterCat(cat) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            filtered = cat === 'all' ? products : products.filter(x => x.cat === cat);
+            renderProducts(filtered);
         }
 
         function prepOrder(idx) {
-            selectedIdx = idx;
+            currentIdx = idx;
             const p = filtered[idx];
-            document.getElementById('orderName').innerText = p.name;
-            document.getElementById('orderPrice').innerText = `Rp ${parseInt(p.price).toLocaleString()}`;
-            document.getElementById('qrisImg').src = window.qris;
+            document.getElementById('order-name').innerText = p.name;
+            document.getElementById('order-price').innerText = `Rp ${parseInt(p.price).toLocaleString()}`;
+            document.getElementById('qris-img').src = window.qris;
             openOverlay('ov-order');
         }
 
-        async function confirmPayment() {
-            const tid = document.getElementById('targetId').value;
+        async function submitOrder() {
+            const tid = document.getElementById('order-target').value;
             if(!tid) return alert("Isi Target ID!");
-            const p = filtered[selectedIdx];
-            await _supabase.from('orders').insert([{ prod: p.name, target: tid, price: p.price, status: 'Pending' }]);
-            window.open(`https://wa.me/6285129226805?text=*ORDER BARU*%0AProduk: ${p.name}%0ATarget: ${tid}`);
+            const p = filtered[currentIdx];
+            await _supabase.from('orders').insert([{ prod: p.name, target: tid, price: p.price, status: 'Pending', user: currentUser ? currentUser.u : 'Guest' }]);
+            window.open(`https://wa.me/6285129226805?text=*ORDER BARU*%0AProduk: ${p.name}%0ATarget: ${tid}%0APembeli: ${currentUser?currentUser.u:'Guest'}`);
             closeOverlay('ov-order');
         }
 
-        async function doTrack() {
-            const tid = document.getElementById('trackInput').value;
-            const res = document.getElementById('trackRes');
+        async function trackPesanan() {
+            const tid = document.getElementById('track-id').value;
+            const res = document.getElementById('track-res');
             res.innerHTML = "Mencari...";
             const { data } = await _supabase.from('orders').select('*').eq('target', tid).order('created_at', {ascending: false});
             if(data && data.length > 0) {
                 res.innerHTML = data.map(o => `
                     <div style="background:var(--bg); padding:15px; border-radius:15px; margin-bottom:10px; border-left:5px solid var(--primary)">
-                        <b>${o.prod}</b><br>Status: <span style="color:var(--primary)">${o.status}</span>
+                        <b>${o.prod}</b><br>Status: <span style="color:var(--primary)">${o.status}</span><br><small>${o.created_at.slice(0,10)}</small>
                     </div>
                 `).join('');
-            } else res.innerHTML = "Tidak ada pesanan.";
+            } else res.innerHTML = "Pesanan tidak ditemukan.";
         }
 
-        // Overlay Logic
+        // AUTH
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-title').innerText = isLoginMode ? 'Login Akun' : 'Daftar Akun';
+            document.getElementById('auth-switch').innerText = isLoginMode ? 'Belum punya akun? Daftar' : 'Sudah punya akun? Login';
+        }
+
+        function handleAuth() {
+            const u = document.getElementById('auth-u').value;
+            const p = document.getElementById('auth-p').value;
+            if(!u || !p) return alert("Isi lengkap!");
+            if(isLoginMode) {
+                // Simulasi login (Karena kita pakai Supabase untuk jualan, kita pakai local untuk user agar cepat)
+                let savedUsers = JSON.parse(localStorage.getItem('z_registered')) || [];
+                const found = savedUsers.find(x => x.u === u && x.p === p);
+                if(found) {
+                    currentUser = found;
+                    sessionStorage.setItem('z_user', JSON.stringify(found));
+                    location.reload();
+                } else alert("Akun salah!");
+            } else {
+                let savedUsers = JSON.parse(localStorage.getItem('z_registered')) || [];
+                if(savedUsers.find(x => x.u === u)) return alert("User sudah ada!");
+                savedUsers.push({ u, p });
+                localStorage.setItem('z_registered', JSON.stringify(savedUsers));
+                alert("Daftar berhasil! Silahkan login.");
+                toggleAuthMode();
+            }
+        }
+
+        function updateAuthUI() {
+            document.getElementById('user-area').innerHTML = `<button class="tab-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> ${currentUser.u}</button>`;
+        }
+
+        function logout() { sessionStorage.removeItem('z_user'); location.reload(); }
+
+        // ADMIN
+        function accessAdmin() { if(prompt("Pass Admin:") === adminCfg.pass) openOverlay('ov-admin'); }
+        
+        function switchAdminTab(id, el) {
+            document.querySelectorAll('.admin-sec').forEach(s => s.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            el.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        async function adminAddProduct() {
+            const n = document.getElementById('ap-name').value;
+            const c = document.getElementById('ap-cat').value;
+            const p = document.getElementById('ap-price').value;
+            const d = document.getElementById('ap-desc').value;
+            const f = document.getElementById('ap-img').files[0];
+            if(!n || !f) return alert("Isi Nama & Foto!");
+            setLoad(true);
+            const b64 = await toB64(f);
+            await _supabase.from('products').insert([{ name: n, cat: c, price: p, desc: d, img: b64 }]);
+            location.reload();
+        }
+
+        async function adminAddTesti() {
+            const n = document.getElementById('at-name').value;
+            const r = document.getElementById('at-rate').value;
+            const m = document.getElementById('at-msg').value;
+            const f = document.getElementById('at-img').files[0];
+            if(!n || !f) return alert("Lengkapi!");
+            setLoad(true);
+            const b64 = await toB64(f);
+            await _supabase.from('testimonials').insert([{ name: n, rate: r, msg: m, img: b64 }]);
+            location.reload();
+        }
+
+        async function adminUpdateSettings() {
+            const qf = document.getElementById('as-qris').files[0];
+            const wf = document.getElementById('as-welcome').files[0];
+            setLoad(true);
+            if(qf) {
+                const b = await toB64(qf);
+                await _supabase.from('settings').update({ value: b }).eq('key', 'qris_image');
+            }
+            if(wf) {
+                const b = await toB64(wf);
+                await _supabase.from('settings').update({ value: b }).eq('key', 'ov_img');
+            }
+            location.reload();
+        }
+
+        function adminUpdateAuth() {
+            const u = document.getElementById('as-user').value;
+            const p = document.getElementById('as-pass').value;
+            if(u) adminCfg.user = u;
+            if(p) adminCfg.pass = p;
+            localStorage.setItem('z_admin', JSON.stringify(adminCfg));
+            alert("Akses Admin Diperbarui!");
+        }
+
+        // UTILS
+        function toggleTheme() {
+            const isD = document.body.getAttribute('data-theme') === 'dark';
+            const target = isD ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', target);
+            localStorage.setItem('z_theme', target);
+            document.getElementById('theme-icon').innerHTML = target === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        }
+        function toggleLang() {
+            lang = lang === 'id' ? 'en' : 'id';
+            document.getElementById('lang-text').innerText = lang.toUpperCase();
+            document.getElementById('tr-h1').innerHTML = dict[lang].h1;
+            document.getElementById('tr-sub').innerText = dict[lang].sub;
+            document.getElementById('tr-testi').innerText = dict[lang].testi;
+        }
+        function toggleKebab() { const k = document.getElementById('kebab-menu'); k.style.display = k.style.display === 'block' ? 'none' : 'block'; }
         function openOverlay(id) {
             const el = document.getElementById(id);
             el.style.display = 'flex';
             setTimeout(() => el.classList.add('active'), 50);
         }
-
         function closeOverlay(id) {
             const el = document.getElementById(id);
             el.classList.remove('active');
             setTimeout(() => el.style.display = 'none', 500);
         }
-
-        // Admin
-        function openAdmin() { if(prompt("Pass Admin:") === "admin123") openOverlay('ov-admin'); }
-
-        async function updateAdminSettings() {
-            const qf = document.getElementById('adm-qris').files[0];
-            const of = document.getElementById('adm-ov').files[0];
-            setLoad(true);
-            if(qf) {
-                const b64 = await toB64(qf);
-                await _supabase.from('settings').update({ value: b64 }).eq('key', 'qris_image');
-            }
-            if(of) {
-                const b64 = await toB64(of);
-                await _supabase.from('settings').update({ value: b64 }).eq('key', 'ov_img');
-            }
-            location.reload();
-        }
-
-        async function adminAddProduct() {
-            const n = document.getElementById('adm-pname').value;
-            const p = document.getElementById('adm-pprice').value;
-            const f = document.getElementById('adm-pimg').files[0];
-            if(!n || !f) return alert("Lengkapi!");
-            setLoad(true);
-            const b64 = await toB64(f);
-            await _supabase.from('products').insert([{ name: n, price: p, img: b64 }]);
-            location.reload();
-        }
-
-        // Utils
-        const toB64 = f => new Promise(res => { const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result); });
-        function toggleTheme() {
-            const isD = document.body.getAttribute('data-theme') === 'dark';
-            document.body.setAttribute('data-theme', isD ? 'light' : 'dark');
-            document.getElementById('themeIcon').className = isD ? 'fas fa-moon' : 'fas fa-sun';
-        }
-        function toggleKebab() { const k = document.getElementById('kebab'); k.style.display = k.style.display === 'block' ? 'none' : 'block'; }
         function setLoad(s) { document.getElementById('loader').style.display = s ? 'flex' : 'none'; }
+        const toB64 = f => new Promise(res => { const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result); });
 
         window.onload = init;
-        window.onclick = (e) => { if(!e.target.closest('.nav-tools')) document.getElementById('kebab').style.display = 'none'; }
+        window.onclick = (e) => { if(!e.target.closest('.nav-tools')) document.getElementById('kebab-menu').style.display = 'none'; }
     </script>
 </body>
 </html>
