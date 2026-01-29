@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenn Storee - Cloud Professional</title>
+    
+    <!-- Library Eksternal -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2563eb; --bg: #f8fafc; --card: #ffffff;
+            --text: #0f172a; --text-muted: #64748b; --border: #e2e8f0;
+        }
+
+        [data-theme="dark"] {
+            --bg: #020617; --card: #0f172a; --text: #f1f5f9;
+            --text-muted: #94a3b8; --border: #1e293b;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.2s; }
+        body { background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+
+        /* Navbar */
+        nav {
+            background: var(--card); padding: 15px 5%; display: flex; 
+            justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+
+        /* Layout */
+        .container { max-width: 1200px; margin: auto; padding: 40px 5%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+
+        /* Card Produk */
+        .card-prod {
+            background: var(--card); border-radius: 20px; overflow: hidden; 
+            border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .card-img { width: 100%; height: 200px; object-fit: cover; background: #ddd; }
+        .card-body { padding: 20px; }
+
+        /* Loader */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999;
+            transition: 0.5s;
+        }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px); padding: 20px;
+        }
+        .modal-content {
+            background: var(--card); padding: 30px; border-radius: 25px; 
+            width: 100%; max-width: 500px; border: 1px solid var(--border);
+        }
+
+        /* Buttons */
+        .btn { padding: 12px 24px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        .admin-float { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 15px; border: none; cursor: pointer; z-index: 1500; }
+
+        /* Dropdown Kebab */
+        .dropdown {
+            display: none; position: absolute; right: 5%; top: 60px; background: var(--card);
+            border: 1px solid var(--border); border-radius: 12px; width: 200px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 1100;
+        }
+        .dropdown button { width: 100%; padding: 12px; background: none; border: none; color: var(--text); text-align: left; cursor: pointer; border-bottom: 1px solid var(--border); }
+    </style>
+</head>
+<body data-theme="light">
+
+    <!-- Loader (Akan hilang otomatis) -->
+    <div id="loader">
+        <i class="fas fa-circle-notch fa-spin fa-3x" style="color: var(--primary);"></i>
+        <p style="margin-top: 15px; font-weight: 600;">Menghubungkan Ke Zenn Cloud...</p>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav>
+        <a href="#" class="logo">ZENN<span>STOREE</span></a>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="btn" onclick="toggleTheme()" style="background: none; color: var(--text); font-size: 1.2rem;"><i class="fas fa-moon" id="themeIcon"></i></button>
+            <button class="btn" onclick="toggleDropdown()"><i class="fas fa-ellipsis-v"></i></button>
+        </div>
+        
+        <div id="kebabMenu" class="dropdown">
+            <button onclick="alert('Riwayat Masih Kosong')">History</button>
+            <button onclick="alert('Zenn Storee v5.0')">Tentang</button>
+            <button onclick="window.open('https://wa.me/628123456789')">Hubungi Admin</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 50px;" data-aos="fade-up">
+            <h1>Premium <span>Gaming Store</span></h1>
+            <p style="color: var(--text-muted);">Layanan Top Up & Joki dengan sistem Cloud Supabase.</p>
+        </div>
+
+        <div class="grid" id="mainGrid">
+            <!-- Tempat Produk -->
+            <p id="emptyMsg" style="text-align: center; grid-column: 1/-1; opacity: 0.5;">Memuat produk...</p>
+        </div>
+    </div>
+
+    <!-- MODAL ORDER -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <h2 id="orderTitle">Produk</h2>
+            <input type="text" id="targetId" placeholder="User ID / Target" style="width: 100%; padding: 12px; margin: 15px 0; border-radius: 10px; border: 1px solid var(--border);">
+            
+            <div style="background: var(--bg); padding: 20px; border-radius: 20px; text-align: center;">
+                <p>Harga Akhir:</p>
+                <h2 id="finalPrice" style="color: var(--primary); margin: 10px 0;">Rp 0</h2>
+                <p style="font-size: 0.7rem;">Bayar via QRIS (Cek WhatsApp Admin)</p>
+            </div>
+
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="confirmOrder()">Pesan Sekarang</button>
+            <button class="btn" style="width: 100%; margin-top: 10px; background: none;" onclick="closeModal()">Batal</button>
+        </div>
+    </div>
+
+    <button class="admin-float" onclick="openAdmin()"><i class="fas fa-shield-alt"></i></button>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+
+        // --- KONFIGURASI SUPABASE (GANTI INI) ---
+        const SB_URL = "https://supjhhgcnqqxdkzsvykq.supabase.co";
+        const SB_KEY = "supjhhgcnqqxdkzsvykq.supabase.co";
+
+        let _supabase;
+        let allProds = [];
+
+        // 1. Fungsi Inisialisasi (Mencegah Crash)
+        function initSupabase() {
+            try {
+                // Gunakan nama variabel yang berbeda dari library
+                if (typeof supabase !== 'undefined') {
+                    _supabase = supabase.createClient(SB_URL, SB_KEY);
+                    console.log("Supabase Terhubung");
+                } else {
+                    throw new Error("Library Supabase tidak terbaca");
+                }
+            } catch (e) {
+                console.error("Gagal inisialisasi:", e.message);
+                document.getElementById('emptyMsg').innerText = "Gagal terhubung ke database. Cek API Key.";
+            }
+        }
+
+        // 2. Load Data Produk
+        async function fetchProducts() {
+            try {
+                if (!_supabase) return;
+                const { data, error } = await _supabase.from('products').select('*');
+                if (error) throw error;
+
+                allProds = data || [];
+                renderGrid(allProds);
+            } catch (err) {
+                console.error("Gagal mengambil produk:", err.message);
+                document.getElementById('emptyMsg').innerText = "Belum ada produk di database.";
+            } finally {
+                // Pastikan loader hilang apapun yang terjadi
+                setTimeout(() => {
+                    document.getElementById('loader').style.opacity = '0';
+                    setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+                }, 1000);
+            }
+        }
+
+        function renderGrid(data) {
+            const grid = document.getElementById('mainGrid');
+            if(data.length === 0) {
+                document.getElementById('emptyMsg').innerText = "Produk masih kosong.";
+                return;
+            }
+            document.getElementById('emptyMsg').style.display = 'none';
+            grid.innerHTML = data.map((p, i) => `
+                <div class="card-prod" data-aos="fade-up">
+                    <img src="${p.img || 'https://via.placeholder.com/300'}" class="card-img">
+                    <div class="card-body">
+                        <h3>${p.name}</h3>
+                        <h2 style="color: var(--primary); margin: 10px 0;">Rp ${p.price.toLocaleString()}</h2>
+                        <button class="btn btn-primary" onclick="openOrder(${i})">Beli</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 3. Sistem Modal & Order
+        let selectedIdx = null;
+        function openOrder(idx) {
+            selectedIdx = idx;
+            const p = allProds[idx];
+            document.getElementById('orderTitle').innerText = p.name;
+            document.getElementById('finalPrice').innerText = `Rp ${p.price.toLocaleString()}`;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+
+        function confirmOrder() {
+            const target = document.getElementById('targetId').value;
+            if(!target) return alert("Isi Target!");
+            const p = allProds[selectedIdx];
+            const waUrl = `https://api.whatsapp.com/send?phone=6285129226805&text=*ORDER ZENN STOREE*%0AProduk: ${p.name}%0ATarget: ${target}%0AHarga: Rp ${p.price.toLocaleString()}`;
+            window.open(waUrl);
+        }
+
+        // 4. Fitur Tambahan
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        function toggleDropdown() {
+            const menu = document.getElementById('kebabMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function openAdmin() {
+            const p = prompt("Password Admin:");
+            if(p === "admin123") alert("Fitur Admin segera hadir. Silahkan tambah produk langsung dari Dashboard Supabase -> Table Editor.");
+        }
+
+        // JALANKAN SAAT START
+        window.onload = () => {
+            initSupabase();
+            fetchProducts();
+        };
+
+        // Safety Hide Loader (Jika internet lemot, loader paksa hilang dalam 4 detik)
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none';
+        }, 4000);
+    </script>
+</body>
+</html>
