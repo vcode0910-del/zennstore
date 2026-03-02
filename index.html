@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostinger Clone - Store Hosting</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">HOSTINGER</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#hero">Beranda</a></li>
+            <li><a href="#pricing">Harga</a></li>
+            <li><a href="#">Fitur</a></li>
+            <li><a href="#" class="btn-login">Login</a></li>
+        </ul>
+        <div class="menu-toggle" id="mobile-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" id="hero">
+        <div class="hero-content">
+            <h1>Hosting Web yang Cepat & Handal</h1>
+            <p>Dapatkan performa maksimal untuk website Anda dengan harga terjangkau.</p>
+            <a href="#pricing" class="cta-button">Pilih Paket Sekarang</a>
+        </div>
+    </header>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <h2>Pilih Paket Hosting Anda</h2>
+        <div class="pricing-container">
+            <!-- Paket 1 -->
+            <div class="card">
+                <h3>Single Hosting</h3>
+                <p class="price">Rp 14.900/bln</p>
+                <ul>
+                    <li>1 Website</li>
+                    <li>50 GB SSD Storage</li>
+                    <li>100 GB Bandwidth</li>
+                    <li>Gratis SSL</li>
+                </ul>
+                <button onclick="orderNow('Single')">Pilih Paket</button>
+            </div>
+            <!-- Paket 2 (Premium - Rekomendasi) -->
+            <div class="card featured">
+                <span class="badge">Terlaris</span>
+                <h3>Premium Hosting</h3>
+                <p class="price">Rp 24.900/bln</p>
+                <ul>
+                    <li>100 Website</li>
+                    <li>100 GB SSD Storage</li>
+                    <li>Unlimited Bandwidth</li>
+                    <li>Gratis Domain</li>
+                </ul>
+                <button onclick="orderNow('Premium')">Pilih Paket</button>
+            </div>
+            <!-- Paket 3 -->
+            <div class="card">
+                <h3>Business Hosting</h3>
+                <p class="price">Rp 45.900/bln</p>
+                <ul>
+                    <li>100 Website</li>
+                    <li>200 GB NVMe Storage</li>
+                    <li>Harian Backups</li>
+                    <li>Gratis CDN</li>
+                </ul>
+                <button onclick="orderNow('Business')">Pilih Paket</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2024 Hostinger Clone Project. Dibuat dengan HTML, CSS, & JS.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
