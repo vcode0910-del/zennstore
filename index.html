@@ -3,66 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostinger Clone - Hosting Murah & Cepat</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Hostinger Pro - Web Hosting Terbaik</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* CSS VARIABLES - Warna Khas Hostinger */
         :root {
-            --primary: #673de6;
-            --primary-dark: #5025d1;
-            --secondary: #00b090;
-            --dark: #2f1c6a;
-            --light: #f4f5f9;
+            --brand-purple: #673de6;
+            --brand-dark: #2f1c6a;
+            --brand-success: #00b090;
+            --bg-light: #f4f5f9;
             --white: #ffffff;
-            --text-main: #2f1c6a;
+            --text-main: #100a30;
             --text-muted: #727586;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 10px 30px rgba(103, 61, 230, 0.08);
         }
 
-        /* RESET & BASE */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--white); color: var(--text-main); overflow-x: hidden; line-height: 1.6; }
+        
+        /* Utility Classes */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .btn { 
+            padding: 14px 28px; border-radius: 50px; font-weight: 700; 
+            cursor: pointer; transition: var(--transition); border: none;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            font-size: 15px;
+        }
+        .btn-primary { background: var(--brand-purple); color: white; }
+        .btn-primary:hover { background: #5025d1; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(103, 61, 230, 0.3); }
+        .btn-outline { background: transparent; border: 2px solid var(--brand-purple); color: var(--brand-purple); }
+        .btn-outline:hover { background: var(--brand-purple); color: white; }
+
+        /* Navigation */
+        header { 
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
+            padding: 15px 0; position: sticky; top: 0; z-index: 1000; transition: var(--transition);
+        }
+        header.scrolled { box-shadow: var(--shadow); padding: 10px 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 800; color: var(--brand-purple); letter-spacing: -1px; }
+        .nav-menu { display: flex; gap: 32px; list-style: none; }
+        .nav-menu a { font-weight: 600; color: var(--text-main); text-decoration: none; transition: var(--transition); font-size: 15px; }
+        .nav-menu a:hover { color: var(--brand-purple); }
+
+        /* Hero & Domain Search */
+        .hero { padding: 100px 0 80px; background: radial-gradient(circle at top right, #f8f6ff, #ffffff); text-align: center; }
+        .hero h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; color: var(--brand-dark); }
+        .domain-box { 
+            max-width: 700px; margin: 40px auto; background: white; 
+            padding: 8px; border-radius: 50px; display: flex; box-shadow: var(--shadow);
+            border: 1px solid #eee;
+        }
+        .domain-box input { 
+            flex: 1; border: none; padding: 0 25px; outline: none; font-size: 16px; border-radius: 50px;
         }
 
-        html {
-            scroll-behavior: smooth;
+        /* Pricing Cards */
+        .pricing { padding: 100px 0; background: var(--bg-light); }
+        .section-title { text-align: center; margin-bottom: 60px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        
+        .card { 
+            background: white; padding: 40px; border-radius: 24px; transition: var(--transition);
+            border: 1px solid #e2e8f0; position: relative; overflow: hidden;
+        }
+        .card:hover { transform: translateY(-10px); border-color: var(--brand-purple); box-shadow: var(--shadow); }
+        .card.popular { border: 2px solid var(--brand-purple); }
+        .badge { 
+            position: absolute; top: 20px; right: -35px; background: var(--brand-purple);
+            color: white; padding: 5px 40px; transform: rotate(45deg); font-size: 12px; font-weight: 700;
+        }
+        .price { font-size: 42px; font-weight: 800; margin: 20px 0; color: var(--brand-purple); }
+        .price span { font-size: 16px; color: var(--text-muted); font-weight: 400; }
+        
+        .feature-list { list-style: none; margin: 30px 0; text-align: left; }
+        .feature-list li { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .feature-list i { color: var(--brand-success); font-size: 18px; }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(16, 10, 48, 0.6); display: none; align-items: center;
+            justify-content: center; z-index: 2000; backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 400px;
+            position: relative; animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+
+        /* Toast Notification */
+        #toast {
+            position: fixed; bottom: 30px; right: 30px; background: var(--brand-dark);
+            color: white; padding: 16px 28px; border-radius: 12px; display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 3000; animation: fadeIn 0.3s;
         }
 
-        body {
-            background-color: var(--white);
-            color: var(--text-main);
-            line-height: 1.6;
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .nav-menu { display: none; }
+            .domain-box { border-radius: 15px; flex-direction: column; padding: 15px; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="mainHeader">
+        <div class="container nav">
+            <div class="logo"><i class="fas fa-bolt"></i> HOSTINGER</div>
+            <ul class="nav-menu">
+                <li><a href="#hosting">Hosting</a></li>
+                <li><a href="#domain">Domain</a></li>
+                <li><a href="#">VPS</a></li>
+                <li><a href="#">Email</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn btn-outline" style="padding: 10px 20px;" onclick="toggleModal('loginModal')">Log In</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>Ciptakan Website Impian <br><span style="color: var(--brand-purple);">Mulai Hari Ini.</span></h1>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 20px auto;">Dapatkan performa terbaik, keamanan tingkat tinggi, dan dukungan bantuan 24/7.</p>
+            
+            <div class="domain-box" id="domain">
+                <input type="text" id="domainInput" placeholder="Cari nama domain idaman Anda (misal: bisnissaya.com)">
+                <button class="btn btn-primary" onclick="checkDomain()">Cek Domain</button>
+            </div>
+            <p id="domainResult" style="margin-top: -30px; font-weight: 600;"></p>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="hosting">
+        <div class="container">
+            <div class="section-title">
+                <h2>Pilih Paket Hosting Anda</h2>
+                <p>Harga terjangkau dengan fitur kelas dunia</p>
+            </div>
+            
+            <div class="grid">
+                <!-- Plan 1 -->
+                <div class="card">
+                    <h3>Single Hosting</h3>
+                    <p>Ideal untuk blog pribadi</p>
+                    <div class="price">Rp 12.900 <span>/bulan</span></div>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> 1 Website</li>
+                        <li><i class="fas fa-check-circle"></i> 50 GB SSD</li>
+                        <li><i class="fas fa-check-circle"></i> SSL Gratis Selamanya</li>
+                        <li><i class="fas fa-times-circle" style="color: #ccc;"></i> Domain Gratis</li>
+                    </ul>
+                    <button class="btn btn-outline" style="width: 100%" onclick="addToCart('Single Hosting')">Pilih Paket</button>
+                </div>
+
+                <!-- Plan 2 -->
+                <div class="card popular">
+                    <div class="badge">TERLARIS</div>
+                    <h3>Premium Hosting</h3>
+                    <p>Cocok untuk UMKM & Portofolio</p>
+                    <div class="price">Rp 24.900 <span>/bulan</span></div>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> 100 Website</li>
+                        <li><i class="fas fa-check-circle"></i> 100 GB SSD</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Domain Gratis (Rp 150rb)</strong></li>
+                        <li><i class="fas fa-check-circle"></i> SSL & Email Gratis</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%" onclick="addToCart('Premium Hosting')">Tambah ke Keranjang</button>
+                </div>
+
+                <!-- Plan 3 -->
+                <div class="card">
+                    <h3>Business Hosting</h3>
+                    <p>Performa maksimal toko online</p>
+                    <div class="price">Rp 45.900 <span>/bulan</span></div>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> 100 Website</li>
+                        <li><i class="fas fa-check-circle"></i> 200 GB NVMe Storage</li>
+                        <li><i class="fas fa-check-circle"></i> Backup Harian</li>
+                        <li><i class="fas fa-check-circle"></i> Gratis CDN</li>
+                    </ul>
+                    <button class="btn btn-outline" style="width: 100%" onclick="addToCart('Business Hosting')">Pilih Paket</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Login -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <i class="fas fa-times close-modal" onclick="toggleModal('loginModal')"></i>
+            <h2 style="margin-bottom: 20px; text-align: center;">Selamat Datang!</h2>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" placeholder="email@anda.com" id="loginEmail">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" placeholder="••••••••" id="loginPass">
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">Masuk ke Akun</button>
+            <p style="text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+                Belum punya akun? <a href="#" style="color: var(--brand-purple); font-weight: 700;">Daftar</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"></div>
+
+    <script>
+        // 1. Script Efek Header Saat Scroll
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('mainHeader');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // 2. Fungsi Toggle Modal
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
+        // Close modal if user clicks outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) modal.style.display = "none";
+            });
         }
 
-        ul {
-            list-style: none;
+        // 3. Simulasi Keranjang (Toast Notification)
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        function addToCart(plan) {
+            showToast(`✅ ${plan} berhasil ditambahkan ke keranjang!`);
         }
 
-        .btn {
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-block;
-            border: none;
+        // 4. Simulasi Cek Domain
+        function checkDomain() {
+            const input = document.getElementById('domainInput').value;
+            const result = document.getElementById('domainResult');
+            
+            if (input === "") {
+                result.style.color = "red";
+                result.innerText = "Silakan masukkan nama domain dahulu!";
+                return;
+            }
+
+            result.style.color = "var(--brand-purple)";
+            result.innerText = "🔍 Sedang mengecek ketersediaan...";
+
+            setTimeout(() => {
+                if (input.includes('.com') || input.includes('.id')) {
+                    result.style.color = "var(--brand-success)";
+                    result.innerHTML = `🎉 Selamat! <strong>${input}</strong> tersedia! <span style="cursor:pointer; text-decoration:underline">Beli Sekarang</span>`;
+                } else {
+                    result.style.color = "orange";
+                    result.innerText = `Saran: Gunakan ekstensi .com atau .id untuk hasil maksimal.`;
+                }
+            }, 1500);
+        }
+
+        // 5. Fungsi Login Sederhana
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            if (email) {
+                showToast(`Selamat datang kembali, ${email.split('@')[0]}!`);
+                toggleModal('loginModal');
+            } else {
+                alert("Mohon isi email Anda");
+            }
+        }
+
+        // 6. Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>            border: none;
         }
 
         .btn-primary {
