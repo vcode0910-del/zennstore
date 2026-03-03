@@ -3,85 +3,478 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostinger Clone - Store Hosting</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Font Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Hostinger Clone - Hosting Murah & Cepat</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* CSS VARIABLES - Warna Khas Hostinger */
+        :root {
+            --primary: #673de6;
+            --primary-dark: #5025d1;
+            --secondary: #00b090;
+            --dark: #2f1c6a;
+            --light: #f4f5f9;
+            --white: #ffffff;
+            --text-main: #2f1c6a;
+            --text-muted: #727586;
+        }
+
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--white);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-block;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* HEADER */
+        header {
+            background: var(--white);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .offer-tag {
+            background: #e8e1ff;
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        /* PRICING SECTION */
+        .pricing {
+            padding: 80px 0;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .card {
+            border: 1px solid #e2e5ed;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .card.featured {
+            border: 2px solid var(--primary);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(103, 61, 230, 0.1);
+        }
+
+        .card.featured::before {
+            content: "PALING POPULER";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .price {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .price span {
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        .features-list {
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .features-list li {
+            margin-bottom: 12px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features-list i {
+            color: var(--secondary);
+        }
+
+        /* FEATURES ICONS */
+        .features-icons {
+            background: var(--light);
+            padding: 60px 0;
+        }
+
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .icon-item i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-col li {
+            margin-bottom: 10px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .footer-col li:hover {
+            color: white;
+        }
+
+        .copy {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .nav-links, .nav-right .btn-login {
+                display: none;
+            }
+            .hero h1 { font-size: 32px; }
+            .card.featured { transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">HOSTINGER</div>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#hero">Beranda</a></li>
-            <li><a href="#pricing">Harga</a></li>
-            <li><a href="#">Fitur</a></li>
-            <li><a href="#" class="btn-login">Login</a></li>
-        </ul>
-        <div class="menu-toggle" id="mobile-menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <header class="hero" id="hero">
-        <div class="hero-content">
-            <h1>Hosting Web yang Cepat & Handal</h1>
-            <p>Dapatkan performa maksimal untuk website Anda dengan harga terjangkau.</p>
-            <a href="#pricing" class="cta-button">Pilih Paket Sekarang</a>
+    <!-- Header Navigation -->
+    <header>
+        <div class="container nav">
+            <a href="#" class="logo">
+                <i class="fas fa-bolt"></i> HOSTINGER
+            </a>
+            <ul class="nav-links">
+                <li><a href="#hosting">Hosting</a></li>
+                <li><a href="#vps">VPS</a></li>
+                <li><a href="#email">Email</a></li>
+                <li><a href="#domain">Domain</a></li>
+            </ul>
+            <div class="nav-right">
+                <a href="#" style="font-weight: 600;">Log In</a>
+                <a href="#hosting" class="btn btn-primary">Mulai Sekarang</a>
+            </div>
         </div>
     </header>
 
-    <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
-        <h2>Pilih Paket Hosting Anda</h2>
-        <div class="pricing-container">
-            <!-- Paket 1 -->
-            <div class="card">
-                <h3>Single Hosting</h3>
-                <p class="price">Rp 14.900/bln</p>
-                <ul>
-                    <li>1 Website</li>
-                    <li>50 GB SSD Storage</li>
-                    <li>100 GB Bandwidth</li>
-                    <li>Gratis SSL</li>
-                </ul>
-                <button onclick="orderNow('Single')">Pilih Paket</button>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <span class="offer-tag">DISKON HINGGA 75%</span>
+            <h1>Segalanya yang Anda Butuhkan untuk Membuat Website</h1>
+            <p>Dapatkan hosting berperforma tinggi dengan fitur lengkap: SSL Gratis, Domain Gratis, dan Dukungan 24/7 yang siap membantu Anda kapan saja.</p>
+            <div class="price-hero">
+                <span style="font-size: 20px;">Mulai dari </span>
+                <span style="font-size: 40px; font-weight: 800; color: var(--primary);">Rp 24.900</span>
+                <span>/bln</span>
             </div>
-            <!-- Paket 2 (Premium - Rekomendasi) -->
-            <div class="card featured">
-                <span class="badge">Terlaris</span>
-                <h3>Premium Hosting</h3>
-                <p class="price">Rp 24.900/bln</p>
-                <ul>
-                    <li>100 Website</li>
-                    <li>100 GB SSD Storage</li>
-                    <li>Unlimited Bandwidth</li>
-                    <li>Gratis Domain</li>
-                </ul>
-                <button onclick="orderNow('Premium')">Pilih Paket</button>
+            <br>
+            <a href="#hosting" class="btn btn-primary" style="padding: 18px 40px; font-size: 18px;">Pilih Paket Sekarang</a>
+            <p style="font-size: 12px; margin-top: 15px;">Jaminan 30 Hari Uang Kembali</p>
+        </div>
+    </section>
+
+    <!-- Features Icons -->
+    <section class="features-icons">
+        <div class="container icons-grid">
+            <div class="icon-item">
+                <i class="fas fa-shield-alt"></i>
+                <h3>SSL Gratis</h3>
+                <p>Keamanan data pengunjung terjamin.</p>
             </div>
-            <!-- Paket 3 -->
-            <div class="card">
-                <h3>Business Hosting</h3>
-                <p class="price">Rp 45.900/bln</p>
-                <ul>
-                    <li>100 Website</li>
-                    <li>200 GB NVMe Storage</li>
-                    <li>Harian Backups</li>
-                    <li>Gratis CDN</li>
-                </ul>
-                <button onclick="orderNow('Business')">Pilih Paket</button>
+            <div class="icon-item">
+                <i class="fas fa-server"></i>
+                <h3>Uptime 99.9%</h3>
+                <p>Website selalu online tanpa hambatan.</p>
+            </div>
+            <div class="icon-item">
+                <i class="fas fa-headset"></i>
+                <h3>Dukungan 24/7</h3>
+                <p>Tim ahli kami siap membantu Anda.</p>
+            </div>
+            <div class="icon-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <h3>Sangat Cepat</h3>
+                <p>Optimasi kecepatan dengan LiteSpeed.</p>
             </div>
         </div>
     </section>
 
-    <footer class="footer">
-        <p>&copy; 2024 Hostinger Clone Project. Dibuat dengan HTML, CSS, & JS.</p>
+    <!-- Pricing Section -->
+    <section class="pricing" id="hosting">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 36px;">Pilih Paket Hosting Anda</h2>
+            <div class="pricing-grid">
+                <!-- Card 1 -->
+                <div class="card">
+                    <h3>Single</h3>
+                    <p>Solusi ideal untuk pemula.</p>
+                    <div class="price">Rp 12.900 <span>/bln</span></div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> 1 Website</li>
+                        <li><i class="fas fa-check"></i> 50 GB SSD Storage</li>
+                        <li><i class="fas fa-check"></i> 100 GB Bandwidth</li>
+                        <li><i class="fas fa-times" style="color: #ccc;"></i> Domain Gratis</li>
+                        <li><i class="fas fa-check"></i> SSL Gratis Unlimited</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%; border: 1px solid var(--primary); background: transparent; color: var(--primary);">Pilih Paket</button>
+                </div>
+
+                <!-- Card 2 (Featured) -->
+                <div class="card featured">
+                    <h3>Premium</h3>
+                    <p>Pilihan terbaik untuk bisnis kecil.</p>
+                    <div class="price">Rp 24.900 <span>/bln</span></div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> 100 Website</li>
+                        <li><i class="fas fa-check"></i> 100 GB SSD Storage</li>
+                        <li><i class="fas fa-check"></i> Bandwidth Unlimited</li>
+                        <li><i class="fas fa-check"></i> <strong>Domain Gratis</strong></li>
+                        <li><i class="fas fa-check"></i> SSL Gratis Unlimited</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%;">Tambah ke Keranjang</button>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="card">
+                    <h3>Business</h3>
+                    <p>Optimasi maksimal untuk toko online.</p>
+                    <div class="price">Rp 45.900 <span>/bln</span></div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> 100 Website</li>
+                        <li><i class="fas fa-check"></i> 200 GB NVMe Storage</li>
+                        <li><i class="fas fa-check"></i> Bandwidth Unlimited</li>
+                        <li><i class="fas fa-check"></i> Domain Gratis</li>
+                        <li><i class="fas fa-check"></i> CDN Gratis</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%; border: 1px solid var(--primary); background: transparent; color: var(--primary);">Pilih Paket</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>HOSTING</h4>
+                    <ul>
+                        <li>Web Hosting</li>
+                        <li>Cloud Hosting</li>
+                        <li>WordPress Hosting</li>
+                        <li>VPS Hosting</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>DOMAIN</h4>
+                    <ul>
+                        <li>Cek Domain</li>
+                        <li>Transfer Domain</li>
+                        <li>Free Domain</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>PERUSAHAAN</h4>
+                    <ul>
+                        <li>Tentang Kami</li>
+                        <li>Kontak Kami</li>
+                        <li>Karir</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>BANTUAN</h4>
+                    <ul>
+                        <li>Knowledge Base</li>
+                        <li>Tutorial</li>
+                        <li>Blog</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copy">
+                <p>&copy; 2024 Hostinger Clone. Dibuat untuk tujuan edukasi.</p>
+            </div>
+        </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // SCRIPT - Interactive Elements
+        
+        // 1. Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 2. Simple Scroll Header Effect
+        window.onscroll = function() {
+            const header = document.querySelector("header");
+            if (window.pageYOffset > 50) {
+                header.style.padding = "10px 0";
+            } else {
+                header.style.padding = "15px 0";
+            }
+        };
+
+        // 3. Simple Button Click Mockup
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(btn.innerText.includes("Pilih") || btn.innerText.includes("Tambah")) {
+                    alert("Terima kasih! Mengarahkan Anda ke halaman checkout...");
+                }
+            });
+        });
+    </script>
 </body>
 </html>
